@@ -1,0 +1,6 @@
+{
+  "name": "Ember & Craft | Artisanal Grill & 3D Culinary Experience",
+  "description": "Experience handcrafted smash burgers, wood-fired artisanal pizzas, and immersive 3D culinary storytelling crafted with passion.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,299 @@
+/**
+ * Restaurant Menu Data
+ * Structured by category with dietary information, pricing, and descriptions.
+ */
+
+export type MenuCategory = 'BURGERS' | 'PIZZA' | 'PASTA' | 'SIDES' | 'DESSERTS' | 'DRINKS';
+
+export interface MenuItem {
+  id: string;
+  name: string;
+  category: MenuCategory;
+  description: string;
+  price: number;
+  isVeg: boolean;
+  isSignature?: boolean;
+  prepTimeMinutes: number;
+  calories: number;
+  ingredients: string[];
+  spiceLevel?: 'Mild' | 'Medium' | 'Hot';
+}
+
+export const MENU_CATEGORIES: { id: MenuCategory; label: string; icon: string; tag: string }[] = [
+  { id: 'BURGERS', label: 'Burgers', icon: '🍔', tag: 'Smash & Grill' },
+  { id: 'PIZZA', label: 'Pizza', icon: '🍕', tag: 'Wood-Fired Hearth' },
+  { id: 'PASTA', label: 'Pasta', icon: '🍝', tag: 'Handmade Bronze-Cut' },
+  { id: 'SIDES', label: 'Sides', icon: '🍟', tag: 'Crispy & Savory' },
+  { id: 'DESSERTS', label: 'Desserts', icon: '🍰', tag: 'Sweet Indulgence' },
+  { id: 'DRINKS', label: 'Drinks', icon: '🍹', tag: 'Artisanal & Chilled' },
+];
+
+export const MENU_ITEMS: MenuItem[] = [
+  // --- BURGERS ---
+  {
+    id: 'b-classic-smash',
+    name: 'Classic Smash Burger',
+    category: 'BURGERS',
+    description: 'Crispy-lacy edged prime beef patty, caramelized onions, house-cured pickles, melted American cheddar, toasted brioche bun, signature amber sauce.',
+    price: 15.50,
+    isVeg: false,
+    isSignature: true,
+    prepTimeMinutes: 12,
+    calories: 680,
+    ingredients: ['Dry-Aged Angus Chuck', 'Brioche Bun', 'Wisconsin Cheddar', 'Caramelized Onion', 'Secret Sauce'],
+  },
+  {
+    id: 'b-double-cheese',
+    name: 'Double Cheese Burger',
+    category: 'BURGERS',
+    description: 'Two smashed dry-aged patties, double aged smoked cheddar, dijonnaise, crisp heirloom tomato slice, sweet butter lettuce on toasted sesame bun.',
+    price: 18.50,
+    isVeg: false,
+    isSignature: true,
+    prepTimeMinutes: 14,
+    calories: 920,
+    ingredients: ['Double Beef Patty', 'Smoked Cheddar', 'Tomato', 'Butter Lettuce', 'Dijonnaise'],
+  },
+  {
+    id: 'b-bbq-chicken',
+    name: 'BBQ Chicken Burger',
+    category: 'BURGERS',
+    description: 'Flame-grilled chicken breast basted in bourbon maple BBQ glaze, crisp apple slaw, pickled jalapeños, smoked provolone cheese on charcoal brioche.',
+    price: 16.75,
+    isVeg: false,
+    prepTimeMinutes: 15,
+    calories: 710,
+    ingredients: ['Free-Range Chicken Breast', 'Bourbon BBQ Glaze', 'Apple Slaw', 'Smoked Provolone'],
+    spiceLevel: 'Medium',
+  },
+  {
+    id: 'b-crispy-chicken',
+    name: 'Crispy Chicken Burger',
+    category: 'BURGERS',
+    description: '24-hour buttermilk-brined fried chicken thigh, panko crunch, fermented hot honey, garlic herb aioli, shredded iceberg lettuce, butter toasted bun.',
+    price: 16.25,
+    isVeg: false,
+    prepTimeMinutes: 14,
+    calories: 780,
+    ingredients: ['Buttermilk Fried Chicken', 'Hot Honey', 'Garlic Aioli', 'Iceberg Lettuce'],
+    spiceLevel: 'Medium',
+  },
+
+  // --- PIZZA ---
+  {
+    id: 'p-margherita',
+    name: 'Margherita',
+    category: 'PIZZA',
+    description: 'San Marzano D.O.P. tomato reduction, fresh fiore di latte mozzarella, fragrant sweet basil leaves, Sicilian sea salt, first cold-pressed extra virgin olive oil.',
+    price: 17.00,
+    isVeg: true,
+    isSignature: true,
+    prepTimeMinutes: 10,
+    calories: 620,
+    ingredients: ['72-hr Fermented Dough', 'San Marzano Tomatoes', 'Fresh Mozzarella', 'Sweet Basil', 'EVOO'],
+  },
+  {
+    id: 'p-farmhouse',
+    name: 'Farmhouse',
+    category: 'PIZZA',
+    description: 'Roasted portobello mushrooms, grilled bell peppers, sweet red onions, baby spinach, roasted sweet corn, house herb mozzarella blend, garlic confit oil.',
+    price: 18.50,
+    isVeg: true,
+    prepTimeMinutes: 12,
+    calories: 690,
+    ingredients: ['Wild Mushrooms', 'Bell Peppers', 'Red Onion', 'Baby Spinach', 'Mozzarella'],
+  },
+  {
+    id: 'p-pepperoni',
+    name: 'Pepperoni',
+    category: 'PIZZA',
+    description: 'Artisanal cup-and-char pepperoni cured with smoked paprika, whole milk mozzarella, spicy wildflower honey drizzle, crushed red pepper flakes.',
+    price: 19.50,
+    isVeg: false,
+    isSignature: true,
+    prepTimeMinutes: 10,
+    calories: 840,
+    ingredients: ['Cupping Pepperoni', 'Whole Milk Mozzarella', 'Hot Honey Drizzle', 'San Marzano Sauce'],
+    spiceLevel: 'Medium',
+  },
+  {
+    id: 'p-spicy-paneer',
+    name: 'Spicy Paneer Pizza',
+    category: 'PIZZA',
+    description: 'Tandoori-spiced artisanal paneer cubes, charred red peppers, pickled red onion pearls, fresh coriander, spiced mint crema swirl on blistered crust.',
+    price: 18.75,
+    isVeg: true,
+    prepTimeMinutes: 12,
+    calories: 740,
+    ingredients: ['Spiced Paneer', 'Charred Peppers', 'Mint Crema', 'Pickled Onions', 'Mozzarella'],
+    spiceLevel: 'Hot',
+  },
+
+  // --- PASTA ---
+  {
+    id: 'pa-alfredo',
+    name: 'Alfredo Pasta',
+    category: 'PASTA',
+    description: 'Fresh bronze-extruded fettuccine spun in a velvety emulsion of 24-month Parmigiano-Reggiano, churned cultured butter, Madagascar black pepper, and nutmeg.',
+    price: 17.50,
+    isVeg: true,
+    prepTimeMinutes: 12,
+    calories: 780,
+    ingredients: ['Bronze Fettuccine', 'Parmigiano-Reggiano', 'Cultured Butter', 'Black Pepper'],
+  },
+  {
+    id: 'pa-arrabbiata',
+    name: 'Arrabbiata Pasta',
+    category: 'PASTA',
+    description: 'Rigatoni tossed in a fiery San Marzano tomato ragù infused with toasted garlic slivers, Calabrian chili flakes, fresh flat-leaf parsley, aged pecorino.',
+    price: 16.50,
+    isVeg: true,
+    prepTimeMinutes: 11,
+    calories: 590,
+    ingredients: ['Rigatoni', 'Calabrian Chili', 'Garlic Confit', 'Pecorino Romano'],
+    spiceLevel: 'Hot',
+  },
+  {
+    id: 'pa-creamy-mushroom',
+    name: 'Creamy Mushroom Pasta',
+    category: 'PASTA',
+    description: 'Tagliatelle tossed with pan-seared cremini, chanterelle, and shiitake mushrooms, white wine reduction, light mascarpone cream, white truffle oil essence.',
+    price: 19.00,
+    isVeg: true,
+    isSignature: true,
+    prepTimeMinutes: 13,
+    calories: 720,
+    ingredients: ['Tagliatelle', 'Wild Mushrooms Trio', 'White Wine Reduction', 'White Truffle Oil'],
+  },
+
+  // --- SIDES ---
+  {
+    id: 's-french-fries',
+    name: 'French Fries',
+    category: 'SIDES',
+    description: 'Triple-cooked Idaho russet potato frites tossed in flaky Maldon sea salt and fresh rosemary needles. Served with house garlic dip.',
+    price: 6.50,
+    isVeg: true,
+    prepTimeMinutes: 8,
+    calories: 380,
+    ingredients: ['Idaho Russets', 'Maldon Sea Salt', 'Fresh Rosemary', 'Garlic Dip'],
+  },
+  {
+    id: 's-peri-peri-fries',
+    name: 'Peri Peri Fries',
+    category: 'SIDES',
+    description: 'Crispy golden fries coated in our house-milled African bird’s eye chili seasoning, zesty lime powder, and smoked paprika. Served with chipotle aioli.',
+    price: 7.25,
+    isVeg: true,
+    prepTimeMinutes: 8,
+    calories: 410,
+    ingredients: ['Crispy Fries', 'House Peri Peri Dust', 'Lime Zest', 'Chipotle Dip'],
+    spiceLevel: 'Hot',
+  },
+  {
+    id: 's-garlic-bread',
+    name: 'Garlic Bread',
+    category: 'SIDES',
+    description: 'Wood-fired sourdough baguette slathered with roasted black garlic butter, chopped parsley, melted scamorza and mozzarella cheese pull.',
+    price: 8.50,
+    isVeg: true,
+    prepTimeMinutes: 9,
+    calories: 460,
+    ingredients: ['Artisan Sourdough', 'Black Garlic Butter', 'Scamorza', 'Parsley'],
+  },
+  {
+    id: 's-loaded-nachos',
+    name: 'Loaded Nachos',
+    category: 'SIDES',
+    description: 'Hand-pressed stone-ground corn tortilla chips baked with sharp cheddar queso, black beans, pico de gallo, pickled jalapeños, avocado crema.',
+    price: 11.50,
+    isVeg: true,
+    prepTimeMinutes: 10,
+    calories: 680,
+    ingredients: ['Corn Chips', 'Warm Cheddar Queso', 'Avocado Crema', 'Pico de Gallo'],
+    spiceLevel: 'Medium',
+  },
+
+  // --- DESSERTS ---
+  {
+    id: 'd-brownie',
+    name: 'Chocolate Brownie',
+    category: 'DESSERTS',
+    description: 'Warm Valrhona 70% dark chocolate skillet brownie with molten fudge center, toasted crushed hazelnuts, and a scoop of Tahitian vanilla bean gelato.',
+    price: 9.50,
+    isVeg: true,
+    isSignature: true,
+    prepTimeMinutes: 8,
+    calories: 520,
+    ingredients: ['Valrhona Dark Chocolate', 'Vanilla Gelato', 'Toasted Hazelnuts', 'Sea Salt Flakes'],
+  },
+  {
+    id: 'd-cheesecake',
+    name: 'Cheesecake',
+    category: 'DESSERTS',
+    description: 'Baked New York style cream cheese cake infused with Madagascar vanilla bean on a brown butter speculoos crust, macerated wild strawberry glaze.',
+    price: 9.00,
+    isVeg: true,
+    prepTimeMinutes: 6,
+    calories: 480,
+    ingredients: ['Cultured Cream Cheese', 'Speculoos Crust', 'Wild Strawberry Glaze'],
+  },
+  {
+    id: 'd-tiramisu',
+    name: 'Tiramisu',
+    category: 'DESSERTS',
+    description: 'Espresso-soaked Savoiardi ladyfingers layered with airy zabaglione mascarpone mousse, dusted with Dutch cocoa powder and dark chocolate shavings.',
+    price: 10.00,
+    isVeg: true,
+    isSignature: true,
+    prepTimeMinutes: 6,
+    calories: 440,
+    ingredients: ['Italian Ladyfingers', 'Single-Origin Espresso', 'Mascarpone Mousse', 'Dutch Cocoa'],
+  },
+
+  // --- DRINKS ---
+  {
+    id: 'dr-cold-coffee',
+    name: 'Cold Coffee',
+    category: 'DRINKS',
+    description: 'Slow-steeped 18-hour Ethiopian Yirgacheffe cold brew shaken over crushed ice with creamy oat milk and Bourbon vanilla syrup.',
+    price: 6.00,
+    isVeg: true,
+    prepTimeMinutes: 5,
+    calories: 140,
+    ingredients: ['18-hr Cold Brew', 'Organic Oat Milk', 'Madagascar Vanilla Syrup'],
+  },
+  {
+    id: 'dr-choc-shake',
+    name: 'Chocolate Shake',
+    category: 'DRINKS',
+    description: 'Rich Belgian chocolate ganache blended with house chocolate ice cream, malt, whipped sweet cream, and dark cocoa crisp pearls.',
+    price: 7.50,
+    isVeg: true,
+    prepTimeMinutes: 5,
+    calories: 490,
+    ingredients: ['Belgian Ganache', 'Malt Shake', 'Whipped Cream', 'Cocoa Pearls'],
+  },
+  {
+    id: 'dr-lemonade',
+    name: 'Fresh Lemonade',
+    category: 'DRINKS',
+    description: 'Cold-pressed Eureka lemons, organic agave nectar, crushed sweet mint, sparkling mountain spring water, and lemon verbena.',
+    price: 5.50,
+    isVeg: true,
+    prepTimeMinutes: 4,
+    calories: 90,
+    ingredients: ['Eureka Lemons', 'Organic Agave', 'Fresh Mint', 'Sparkling Spring Water'],
+  },
+  {
+    id: 'dr-iced-tea',
+    name: 'Iced Tea',
+    category: 'DRINKS',
+    description: 'First-flush Darjeeling black tea infused with dried white peach slices, lemon peel, and wild blossom honey. Served chilled over hand-carved ice.',
+    price: 5.50,
+    isVeg: true,
+    prepTimeMinutes: 4,
+    calories: 70,
+    ingredients: ['Darjeeling Black Tea', 'White Peach', 'Lemon Peel', 'Blossom Honey'],
+  },
+];
