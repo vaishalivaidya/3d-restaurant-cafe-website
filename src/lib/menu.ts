@@ -1,6 +1,6 @@
 /**
  * Restaurant Menu Data
- * Structured by category with dietary information, pricing, and descriptions.
+ * Structured by category with dietary information, pricing, descriptions, and realistic food photography.
  */
 
 export type MenuCategory = 'BURGERS' | 'PIZZA' | 'PASTA' | 'SIDES' | 'DESSERTS' | 'DRINKS';
@@ -17,6 +17,7 @@ export interface MenuItem {
   calories: number;
   ingredients: string[];
   spiceLevel?: 'Mild' | 'Medium' | 'Hot';
+  image: string;
 }
 
 export const MENU_CATEGORIES: { id: MenuCategory; label: string; icon: string; tag: string }[] = [
@@ -41,6 +42,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 12,
     calories: 680,
     ingredients: ['Dry-Aged Angus Chuck', 'Brioche Bun', 'Wisconsin Cheddar', 'Caramelized Onion', 'Secret Sauce'],
+    image: '/assets/menu/b_classic_smash.jpg',
   },
   {
     id: 'b-double-cheese',
@@ -53,6 +55,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 14,
     calories: 920,
     ingredients: ['Double Beef Patty', 'Smoked Cheddar', 'Tomato', 'Butter Lettuce', 'Dijonnaise'],
+    image: '/assets/menu/b_double_cheese.jpg',
   },
   {
     id: 'b-bbq-chicken',
@@ -65,6 +68,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 710,
     ingredients: ['Free-Range Chicken Breast', 'Bourbon BBQ Glaze', 'Apple Slaw', 'Smoked Provolone'],
     spiceLevel: 'Medium',
+    image: '/assets/menu/b_bbq_chicken.jpg',
   },
   {
     id: 'b-crispy-chicken',
@@ -77,6 +81,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 780,
     ingredients: ['Buttermilk Fried Chicken', 'Hot Honey', 'Garlic Aioli', 'Iceberg Lettuce'],
     spiceLevel: 'Medium',
+    image: '/assets/menu/b_crispy_chicken.jpg',
   },
 
   // --- PIZZA ---
@@ -91,6 +96,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 10,
     calories: 620,
     ingredients: ['72-hr Fermented Dough', 'San Marzano Tomatoes', 'Fresh Mozzarella', 'Sweet Basil', 'EVOO'],
+    image: '/assets/menu/p_margherita.jpg',
   },
   {
     id: 'p-farmhouse',
@@ -102,6 +108,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 12,
     calories: 690,
     ingredients: ['Wild Mushrooms', 'Bell Peppers', 'Red Onion', 'Baby Spinach', 'Mozzarella'],
+    image: '/assets/menu/p_farmhouse.jpg',
   },
   {
     id: 'p-pepperoni',
@@ -115,6 +122,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 840,
     ingredients: ['Cupping Pepperoni', 'Whole Milk Mozzarella', 'Hot Honey Drizzle', 'San Marzano Sauce'],
     spiceLevel: 'Medium',
+    image: '/assets/menu/p_pepperoni.jpg',
   },
   {
     id: 'p-spicy-paneer',
@@ -127,6 +135,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 740,
     ingredients: ['Spiced Paneer', 'Charred Peppers', 'Mint Crema', 'Pickled Onions', 'Mozzarella'],
     spiceLevel: 'Hot',
+    image: '/assets/menu/p_spicy_paneer.jpg',
   },
 
   // --- PASTA ---
@@ -140,6 +149,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 12,
     calories: 780,
     ingredients: ['Bronze Fettuccine', 'Parmigiano-Reggiano', 'Cultured Butter', 'Black Pepper'],
+    image: '/assets/menu/pa_alfredo.jpg',
   },
   {
     id: 'pa-arrabbiata',
@@ -152,6 +162,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 590,
     ingredients: ['Rigatoni', 'Calabrian Chili', 'Garlic Confit', 'Pecorino Romano'],
     spiceLevel: 'Hot',
+    image: '/assets/menu/pa_arrabbiata.jpg',
   },
   {
     id: 'pa-creamy-mushroom',
@@ -164,6 +175,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 13,
     calories: 720,
     ingredients: ['Tagliatelle', 'Wild Mushrooms Trio', 'White Wine Reduction', 'White Truffle Oil'],
+    image: '/assets/menu/pa_creamy_mushroom.jpg',
   },
 
   // --- SIDES ---
@@ -177,6 +189,20 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 8,
     calories: 380,
     ingredients: ['Idaho Russets', 'Maldon Sea Salt', 'Fresh Rosemary', 'Garlic Dip'],
+    image: '/assets/menu/s_french_fries.jpg',
+  },
+  {
+    id: 's-chicken-wings',
+    name: 'Signature Chicken Wings',
+    category: 'SIDES',
+    description: 'Slow-smoked jumbo chicken wings crisped over red oak coals, tossed in our sticky honey-bourbon glaze with toasted sesame and scallions.',
+    price: 13.50,
+    isVeg: false,
+    isSignature: true,
+    prepTimeMinutes: 12,
+    calories: 640,
+    ingredients: ['Smoked Jumbo Wings', 'Honey-Bourbon Glaze', 'White Sesame', 'Scallion Ribbons'],
+    image: '/assets/menu/s_chicken_wings.jpg',
   },
   {
     id: 's-peri-peri-fries',
@@ -189,6 +215,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 410,
     ingredients: ['Crispy Fries', 'House Peri Peri Dust', 'Lime Zest', 'Chipotle Dip'],
     spiceLevel: 'Hot',
+    image: '/assets/menu/s_peri_peri_fries.jpg',
   },
   {
     id: 's-garlic-bread',
@@ -200,6 +227,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 9,
     calories: 460,
     ingredients: ['Artisan Sourdough', 'Black Garlic Butter', 'Scamorza', 'Parsley'],
+    image: '/assets/menu/s_garlic_bread.jpg',
   },
   {
     id: 's-loaded-nachos',
@@ -212,6 +240,7 @@ export const MENU_ITEMS: MenuItem[] = [
     calories: 680,
     ingredients: ['Corn Chips', 'Warm Cheddar Queso', 'Avocado Crema', 'Pico de Gallo'],
     spiceLevel: 'Medium',
+    image: '/assets/menu/s_loaded_nachos.jpg',
   },
 
   // --- DESSERTS ---
@@ -226,6 +255,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 8,
     calories: 520,
     ingredients: ['Valrhona Dark Chocolate', 'Vanilla Gelato', 'Toasted Hazelnuts', 'Sea Salt Flakes'],
+    image: '/assets/menu/d_brownie.jpg',
   },
   {
     id: 'd-cheesecake',
@@ -237,6 +267,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 6,
     calories: 480,
     ingredients: ['Cultured Cream Cheese', 'Speculoos Crust', 'Wild Strawberry Glaze'],
+    image: '/assets/menu/d_cheesecake.jpg',
   },
   {
     id: 'd-tiramisu',
@@ -249,6 +280,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 6,
     calories: 440,
     ingredients: ['Italian Ladyfingers', 'Single-Origin Espresso', 'Mascarpone Mousse', 'Dutch Cocoa'],
+    image: '/assets/menu/d_tiramisu.jpg',
   },
 
   // --- DRINKS ---
@@ -262,6 +294,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 5,
     calories: 140,
     ingredients: ['18-hr Cold Brew', 'Organic Oat Milk', 'Madagascar Vanilla Syrup'],
+    image: '/assets/menu/dr_cold_coffee.jpg',
   },
   {
     id: 'dr-choc-shake',
@@ -273,6 +306,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 5,
     calories: 490,
     ingredients: ['Belgian Ganache', 'Malt Shake', 'Whipped Cream', 'Cocoa Pearls'],
+    image: '/assets/menu/dr_choc_shake.jpg',
   },
   {
     id: 'dr-lemonade',
@@ -284,6 +318,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 4,
     calories: 90,
     ingredients: ['Eureka Lemons', 'Organic Agave', 'Fresh Mint', 'Sparkling Spring Water'],
+    image: '/assets/menu/dr_lemonade.jpg',
   },
   {
     id: 'dr-iced-tea',
@@ -295,5 +330,6 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTimeMinutes: 4,
     calories: 70,
     ingredients: ['Darjeeling Black Tea', 'White Peach', 'Lemon Peel', 'Blossom Honey'],
+    image: '/assets/menu/dr_iced_tea.jpg',
   },
 ];

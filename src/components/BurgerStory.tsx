@@ -1,370 +1,447 @@
-import React, { useState } from 'react';
-import { Flame, Sparkles, Check, ChevronRight, ChevronLeft, Play, Pause } from 'lucide-react';
-import { Burger3D } from './3d/Burger3D';
+import React, { useState, useEffect, useRef } from 'react';
+import { Sparkles, Utensils, Check, ArrowRight } from 'lucide-react';
+import { PinterestBurgerExperience } from './3d/PinterestBurgerExperience';
 import { useCart } from '../lib/cartContext';
 import { MENU_ITEMS } from '../lib/menu';
 
-interface StepData {
-  number: number;
+interface StepContent {
+  stepNum: number;
+  kicker: string;
   title: string;
-  subtitle: string;
-  tempOrTime: string;
-  description: string;
-  details: string[];
+  quote: string;
+  highlights: string[];
 }
 
-const BURGER_STEPS: StepData[] = [
+const STEPS_CONTENT: StepContent[] = [
   {
-    number: 1,
+    stepNum: 1,
+    kicker: 'STEP 01 · FRESH DAILY',
     title: 'Fresh Farm Ingredients',
-    subtitle: 'Harvested daily, non-GMO & organic',
-    tempOrTime: '38°F Chilled Cellar',
-    description: 'Crisp heirloom butter lettuce, ripe beefsteak tomatoes, sweet red onions, artisan cheddar, and brioche baked at dawn. Every component is inspected for peak flavor.',
-    details: ['Organic heirloom tomatoes', 'Hand-cut red onion rings', 'Cultured Wisconsin cheddar', 'Freshly baked brioche'],
+    quote: 'Every ingredient is selected for freshness, texture and flavor.',
+    highlights: [
+      'Organic heirloom beefsteak tomatoes',
+      'Crisp hand-cut sweet red onions',
+      'Cultured Wisconsin smoked cheddar',
+      'Farmhouse brioche baked fresh at dawn',
+    ],
   },
   {
-    number: 2,
+    stepNum: 2,
+    kicker: 'STEP 02 · SEARED TO PERFECTION',
     title: 'Searing Over Fire & Cast Iron',
-    subtitle: 'Intense Maillard caramelization',
-    tempOrTime: '650°F Searing Plate',
-    description: 'Our proprietary 45-day dry-aged Angus blend is smashed wafer-thin onto a roaring cast iron flat-top. The intense heat locks in savory juices and builds a signature crispy, lacy crust.',
-    details: ['Signature lacy crisp crust', 'Aromatic oakwood smoke', 'Rendering natural beef tallow', 'Coarse sea salt & pepper crust'],
+    quote: 'High heat creates the caramelized crust and smoky flavor.',
+    highlights: [
+      '650°F seasoned cast-iron flat-top',
+      'Signature lacy Maillard crust',
+      '45-day dry-aged Angus proprietary blend',
+      'Coarse sea salt & cracked black peppercorn',
+    ],
   },
   {
-    number: 3,
+    stepNum: 3,
+    kicker: 'STEP 03 · STRUCTURAL HARMONY',
     title: 'Layer-by-Layer Assembly',
-    subtitle: 'Engineered structural harmony',
-    tempOrTime: 'Balanced Temperature Matrix',
-    description: 'Each layer is strategically positioned to maintain crunch and contrast: butter-toasted base bun, velvety house amber sauce, cold crisp lettuce, juicy tomato, and sizzling beef.',
-    details: ['Barrier sauce protects bun', 'Cold greens below hot patty', 'Double patty stacking', 'Gold toasted sesame top'],
+    quote: 'Every component is balanced to maintain crunch, heat, and contrast.',
+    highlights: [
+      'Barrier sauce protects toasted bottom bun',
+      'Cold crisp butter greens insulated from heat',
+      'Stacked double wagyu smash patties',
+      'Golden toasted sesame brioche crown',
+    ],
   },
   {
-    number: 4,
+    stepNum: 4,
+    kicker: 'STEP 04 · MOLTEN PERFECTION',
     title: 'Final Touch: Melt & Glaze',
-    subtitle: 'Steam-domed to decadent perfection',
-    tempOrTime: '165°F Melting Point',
-    description: 'Under a stainless steel melting cloche, a splash of bone broth generates instant aromatic steam, wrapping aged smoked cheddar in a molten veil that drips into every crack of the patty.',
-    details: ['Molten cheddar cascade', 'Bourbon honey drizzle', 'Warm toasted crown placement', 'Fresh cracked pepper garnish'],
+    quote: 'Under the cloche, steam melts aged cheddar into every craggy sear mark.',
+    highlights: [
+      '165°F bone broth dome steam cloche',
+      'Aged smoked cheddar molten cascade',
+      'Velvety house-churned amber glaze',
+      'Infused with aromatic oakwood essence',
+    ],
   },
   {
-    number: 5,
+    stepNum: 5,
+    kicker: 'STEP 05 · READY FOR SERVICE',
     title: 'Served Hot to Your Table',
-    subtitle: 'Peak texture within 90 seconds',
-    tempOrTime: 'Immediate Table Service',
-    description: 'The completed masterpiece is plated immediately. The contrast of piping hot beef, molten cheese, cool crisp greens, and warm pillowy brioche delivers the quintessential gourmet bite.',
-    details: ['Unrivaled texture contrast', 'Served with sea-salted frites', 'Signature dipping sauce on side', 'Made fresh to order'],
+    quote: 'Ready for the first bite.',
+    highlights: [
+      'Delivered within 90 seconds of plating',
+      'Harmonious contrast of hot, crisp & pillowy',
+      'Paired with rosemary sea-salted frites',
+      'Handcrafted to order with obsessive care',
+    ],
   },
 ];
 
+const STEP_TABS = [
+  { id: 1, label: '01 Fresh Ingredients' },
+  { id: 2, label: '02 Searing' },
+  { id: 3, label: '03 Assembly' },
+  { id: 4, label: '04 Melt & Glaze' },
+  { id: 5, label: '05 Served Hot' },
+];
+
 export const BurgerStory: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const { addItem } = useCart();
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const { addItem, setIsCartOpen } = useCart();
+  const sectionRef = useRef<HTMLElement>(null);
+  const isUserClicking = useRef<boolean>(false);
+  const userClickTimeout = useRef<number | null>(null);
 
-  // Step cycling timer when playing
-  React.useEffect(() => {
-    if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setCurrentStep((prev) => (prev % 5) + 1);
-    }, 4200);
-    return () => clearInterval(interval);
-  }, [isPlaying]);
-
-  const activeStepData = BURGER_STEPS[currentStep - 1];
-
+  // Handle Order CTA
   const handleOrderClassic = () => {
     const classicBurger = MENU_ITEMS.find((i) => i.id === 'b-classic-smash') || MENU_ITEMS[0];
     addItem(classicBurger, 1);
+    setIsCartOpen(true);
   };
+
+  const handleStepClick = (stepId: number) => {
+    isUserClicking.current = true;
+    setCurrentStep(stepId);
+    if (userClickTimeout.current) clearTimeout(userClickTimeout.current);
+    userClickTimeout.current = window.setTimeout(() => {
+      isUserClicking.current = false;
+    }, 1200);
+  };
+
+  // Scroll-driven progression: automatically transition stages as the user scrolls through the section
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isUserClicking.current) return;
+      if (!sectionRef.current) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      const totalH = rect.height;
+
+      // Section progress from top of screen to bottom
+      const scrolled = windowH - rect.top;
+      if (scrolled < 0 || rect.bottom < 0) return;
+
+      const progress = Math.min(1, Math.max(0, scrolled / (totalH + windowH * 0.4)));
+
+      // Map progress smoothly across 5 steps
+      let targetStep = 1;
+      if (progress < 0.22) targetStep = 1;
+      else if (progress < 0.42) targetStep = 2;
+      else if (progress < 0.62) targetStep = 3;
+      else if (progress < 0.82) targetStep = 4;
+      else targetStep = 5;
+
+      setCurrentStep((prev) => (prev !== targetStep ? targetStep : prev));
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const activeContent = STEPS_CONTENT[currentStep - 1];
 
   return (
     <section
       id="story"
+      ref={sectionRef}
       style={{
-        paddingTop: '100px',
-        paddingBottom: '110px',
-        backgroundColor: 'var(--bg-canvas)',
+        paddingTop: '120px',
+        paddingBottom: '130px',
+        backgroundColor: '#0a0807',
         position: 'relative',
-        borderTop: '1px solid var(--border-subtle)',
+        overflow: 'hidden',
       }}
     >
-      <div className="container">
-        {/* Section Header */}
-        <div className="section-header">
-          <span className="section-kicker">3D Culinary Storytelling</span>
-          <h2 className="section-title">From Fresh Ingredients to Your Table</h2>
-          <p className="section-subtitle">
-            Experience the culinary science and elemental craftsmanship that transforms raw, pristine provisions
-            into our award-winning smash burger.
+      {/* Background Soft Atmospheric Glow (Zero hard borders or dashboard boxes) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '35%',
+          left: '55%',
+          transform: 'translate(-50%, -50%)',
+          width: '750px',
+          height: '750px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(230, 126, 34, 0.16) 0%, rgba(243, 156, 18, 0.05) 45%, transparent 70%)',
+          filter: 'blur(100px)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
+      <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1280px' }}>
+        {/* ======================================================== */}
+        {/* 1. SECTION HEADER (Elegant Serif Typography & Whitespace)*/}
+        {/* ======================================================== */}
+        <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 48px auto' }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '12px',
+              fontFamily: 'var(--font-accent)',
+              color: 'var(--accent-gold)',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+            }}
+          >
+            <Sparkles size={14} color="var(--accent-ember)" />
+            <span>3D Culinary Storytelling</span>
+          </div>
+
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(36px, 4.8vw, 56px)',
+              lineHeight: 1.12,
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              color: '#ffffff',
+              marginBottom: '18px',
+              textWrap: 'balance',
+            }}
+          >
+            From Fresh Ingredients to Your Table
+          </h2>
+
+          <p
+            style={{
+              fontSize: 'clamp(16px, 1.8vw, 19px)',
+              lineHeight: 1.6,
+              color: 'var(--text-secondary)',
+              textWrap: 'balance',
+              margin: '0 auto',
+              maxWidth: '620px',
+            }}
+          >
+            Watch every ingredient come together, from the first fresh ingredient to the final bite.
           </p>
         </div>
 
-        {/* Step Progress Controller */}
+        {/* ======================================================== */}
+        {/* 2. SINGLE STEP NAVIGATION (5 Compact Steps with Glow)    */}
+        {/* ======================================================== */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            marginBottom: '40px',
-            overflowX: 'auto',
-            paddingBottom: '8px',
+            justifyContent: 'center',
+            gap: '10px',
+            flexWrap: 'wrap',
+            marginBottom: '64px',
           }}
         >
-          {BURGER_STEPS.map((s) => {
-            const isActive = s.number === currentStep;
+          {STEP_TABS.map((tab) => {
+            const isActive = tab.id === currentStep;
             return (
               <button
-                key={s.number}
-                onClick={() => {
-                  setCurrentStep(s.number);
-                  setIsPlaying(false);
-                }}
+                key={tab.id}
+                onClick={() => handleStepClick(tab.id)}
                 style={{
-                  flex: '1',
-                  minWidth: '160px',
-                  padding: '14px 16px',
-                  background: isActive ? 'var(--bg-surface-elevated)' : 'rgba(255,255,255,0.03)',
-                  border: isActive ? '1px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-md)',
-                  textAlign: 'left',
+                  padding: '12px 22px',
+                  borderRadius: '999px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  letterSpacing: '0.04em',
+                  cursor: 'pointer',
+                  border: isActive
+                    ? '1.5px solid var(--accent-gold)'
+                    : '1px solid rgba(255, 255, 255, 0.1)',
+                  background: isActive
+                    ? 'rgba(230, 126, 34, 0.18)'
+                    : 'rgba(22, 17, 14, 0.6)',
+                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                  boxShadow: isActive
+                    ? '0 0 25px rgba(243, 156, 18, 0.3), inset 0 0 12px rgba(230, 126, 34, 0.2)'
+                    : 'none',
+                  backdropFilter: 'blur(10px)',
                   transition: 'all var(--transition-fast)',
-                  boxShadow: isActive ? '0 4px 20px rgba(243, 156, 18, 0.15)' : 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '6px',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '11px',
-                      fontFamily: 'var(--font-accent)',
-                      color: isActive ? 'var(--accent-gold)' : 'var(--text-muted)',
-                      fontWeight: 700,
-                      letterSpacing: '0.1em',
-                    }}
-                  >
-                    STEP 0{s.number}
-                  </span>
-                  {isActive && <Check size={14} color="var(--accent-gold)" />}
-                </div>
-                <div
-                  style={{
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {s.title}
-                </div>
+                <span>{tab.label}</span>
+                {isActive && <Check size={14} color="var(--accent-gold)" />}
               </button>
             );
           })}
         </div>
 
-        {/* Story Visualizer Grid */}
+        {/* ======================================================== */}
+        {/* 3. MAIN CINEMATIC EXPERIENCE (NO OUTER DASHBOARD CARD)   */}
+        {/* ======================================================== */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
             alignItems: 'center',
-            gap: '40px',
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-xl)',
-            padding: ' clamp(24px, 4vw, 48px)',
-            boxShadow: 'var(--shadow-medium)',
+            gap: '50px',
+            position: 'relative',
           }}
         >
-          {/* 3D Visual Stage */}
+          {/* LEFT COLUMN: REALISTIC 3D FOOD STAGE (Floating naturally) */}
           <div
             style={{
               position: 'relative',
               width: '100%',
-              height: 'clamp(380px, 45vh, 520px)',
-              background: 'radial-gradient(circle at center, #241a12 0%, #110e0c 80%)',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-subtle)',
-              overflow: 'hidden',
+              height: 'clamp(480px, 60vh, 640px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            {/* 3D Scene running in story mode with current step */}
-            <Burger3D mode="story" step={currentStep} interactive={true} />
-
-            {/* Stage Tag Overlay */}
+            {/* Subtle Warm Amber Halo Directly Behind the 3D Burger */}
             <div
               style={{
                 position: 'absolute',
-                top: '16px',
-                left: '16px',
-                background: 'rgba(15, 12, 10, 0.85)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid var(--border-subtle)',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '540px',
+                height: '540px',
+                borderRadius: '50%',
+                background:
+                  currentStep === 2
+                    ? 'radial-gradient(circle, rgba(255, 87, 34, 0.32) 0%, rgba(243, 156, 18, 0.12) 45%, transparent 70%)'
+                    : 'radial-gradient(circle, rgba(230, 126, 34, 0.25) 0%, rgba(243, 156, 18, 0.08) 45%, transparent 70%)',
+                filter: 'blur(70px)',
+                pointerEvents: 'none',
+                zIndex: 0,
+                transition: 'background 0.5s ease',
               }}
-            >
-              <Flame size={14} color="var(--accent-ember)" />
-              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
-                {activeStepData.tempOrTime}
-              </span>
-            </div>
+            />
 
-            {/* Play/Pause Sequence Bar */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '16px',
-                left: '16px',
-                right: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: 'rgba(15, 12, 10, 0.82)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid var(--border-subtle)',
-                padding: '8px 16px',
-                borderRadius: '8px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    color: 'var(--accent-gold)',
-                    fontSize: '12px',
-                    fontWeight: 600,
-                  }}
-                  aria-label={isPlaying ? 'Pause animation sequence' : 'Play animation sequence'}
-                >
-                  {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-                  <span>{isPlaying ? 'Pause' : 'Auto Play Story'}</span>
-                </button>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button
-                  onClick={() => {
-                    setCurrentStep((prev) => (prev > 1 ? prev - 1 : 5));
-                    setIsPlaying(false);
-                  }}
-                  className="btn-ghost"
-                  style={{ padding: '4px 8px' }}
-                  aria-label="Previous step"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <span className="tabular-nums" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {currentStep} / 5
-                </span>
-                <button
-                  onClick={() => {
-                    setCurrentStep((prev) => (prev < 5 ? prev + 1 : 1));
-                    setIsPlaying(false);
-                  }}
-                  className="btn-ghost"
-                  style={{ padding: '4px 8px' }}
-                  aria-label="Next step"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
+            {/* Realistic Pinterest Reference Culinary Experience */}
+            <div style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }}>
+              <PinterestBurgerExperience step={currentStep} interactive={true} />
             </div>
           </div>
 
-          {/* Step Narrative & Culinary Science */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* RIGHT COLUMN: REFINED EDITORIAL NARRATIVE & HIGHLIGHTS */}
+          <div style={{ maxWidth: '540px', zIndex: 2 }}>
+            {/* Step Kicker */}
             <div
               style={{
                 fontSize: '12px',
                 fontFamily: 'var(--font-accent)',
                 color: 'var(--accent-gold)',
-                letterSpacing: '0.15em',
+                letterSpacing: '0.16em',
                 textTransform: 'uppercase',
+                marginBottom: '14px',
+                fontWeight: 700,
               }}
             >
-              Step 0{activeStepData.number} · {activeStepData.subtitle}
+              {activeContent.kicker}
             </div>
 
+            {/* Title */}
             <h3
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(26px, 3vw, 36px)',
-                lineHeight: 1.2,
-                color: 'var(--text-primary)',
+                fontSize: 'clamp(32px, 3.8vw, 44px)',
+                lineHeight: 1.15,
+                fontWeight: 700,
+                color: '#ffffff',
+                marginBottom: '16px',
+                textWrap: 'balance',
               }}
             >
-              {activeStepData.title}
+              {activeContent.title}
             </h3>
 
+            {/* Short Quote / Description */}
             <p
               style={{
-                fontSize: '15px',
-                lineHeight: 1.7,
+                fontSize: '17px',
+                lineHeight: 1.6,
                 color: 'var(--text-secondary)',
+                marginBottom: '28px',
+                fontStyle: 'italic',
+                textWrap: 'balance',
               }}
             >
-              {activeStepData.description}
+              “{activeContent.quote}”
             </p>
 
-            {/* Ingredient & Technique Highlights */}
+            {/* 3–4 Compact Highlights (Clean & Scannable, not long paragraphs) */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
+                display: 'flex',
+                flexDirection: 'column',
                 gap: '12px',
-                margin: '8px 0',
+                marginBottom: '36px',
               }}
             >
-              {activeStepData.details.map((detail, idx) => (
+              {activeContent.highlights.map((item, idx) => (
                 <div
                   key={idx}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    color: 'var(--text-secondary)',
+                    gap: '12px',
+                    fontSize: '14px',
+                    color: 'var(--text-primary)',
                   }}
                 >
                   <div
                     style={{
-                      width: '5px',
-                      height: '5px',
+                      width: '6px',
+                      height: '6px',
                       borderRadius: '50%',
-                      backgroundColor: 'var(--accent-gold)',
+                      background: 'var(--accent-gold)',
+                      boxShadow: '0 0 8px rgba(243, 156, 18, 0.6)',
+                      flexShrink: 0,
                     }}
                   />
-                  <span>{detail}</span>
+                  <span>{item}</span>
                 </div>
               ))}
             </div>
 
-            {/* Call to Action */}
-            <div style={{ paddingTop: '16px', borderTop: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button onClick={handleOrderClassic} className="btn-primary">
-                <Sparkles size={16} />
-                <span>Taste the Classic Smash ($15.50)</span>
-              </button>
-            </div>
+            {/* Action Area: Step 5 features Prominent ORDER NOW CTA */}
+            {currentStep === 5 ? (
+              <div>
+                <button
+                  onClick={handleOrderClassic}
+                  className="btn-primary"
+                  style={{
+                    padding: '16px 36px',
+                    fontSize: '15px',
+                    borderRadius: '999px',
+                    boxShadow: '0 8px 30px rgba(230, 126, 34, 0.45)',
+                  }}
+                  aria-label="Order Classic Smash Burger"
+                >
+                  <Utensils size={18} />
+                  <span>ORDER NOW</span>
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <button
+                  onClick={() => handleStepClick(currentStep + 1)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 24px',
+                    borderRadius: '999px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(243, 156, 18, 0.3)',
+                    color: 'var(--accent-gold)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                >
+                  <span>Next: {STEP_TABS[currentStep]?.label.slice(3) || 'Next'}</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

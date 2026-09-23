@@ -7,7 +7,7 @@ interface SectionSnapControllerProps {
 }
 
 export const SectionSnapController: React.FC<SectionSnapControllerProps> = ({
-  burgerSectionId = 'exploded-burger',
+  burgerSectionId = 'food-gallery',
   pizzaSectionId = 'pizza',
 }) => {
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);

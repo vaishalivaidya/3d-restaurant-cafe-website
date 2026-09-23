@@ -21,8 +21,8 @@ export const Navbar: React.FC = () => {
           {/* Zone 2: Clean text navigation links */}
           <nav className="nav-links" aria-label="Main Navigation">
             <a href="#story" className="nav-link">Craft Story</a>
-            <a href="#exploded-burger" className="nav-link" style={{ color: 'var(--accent-gold)' }}>
-              Culinary Cinema
+            <a href="#food-gallery" className="nav-link" style={{ color: 'var(--accent-gold)' }}>
+              Food Gallery
             </a>
             <a href="#pizza" className="nav-link">Handcrafted Pizza</a>
             <a href="#menu" className="nav-link">Menu</a>
@@ -87,11 +87,11 @@ export const Navbar: React.FC = () => {
             Craft Story (3D)
           </a>
           <a
-            href="#exploded-burger"
+            href="#food-gallery"
             onClick={() => setMobileMenuOpen(false)}
             style={{ fontSize: '20px', fontFamily: 'var(--font-display)', color: 'var(--accent-gold)' }}
           >
-            Culinary Cinema & Menu
+            Signature Food Gallery
           </a>
           <a
             href="#pizza"

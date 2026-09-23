@@ -3,7 +3,7 @@ import { CartProvider } from './lib/cartContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { BurgerStory } from './components/BurgerStory';
-import { BurgerExplodedLab } from './components/BurgerExplodedLab';
+import { CinematicFoodGallery } from './components/CinematicFoodGallery';
 import { SectionSnapController } from './components/SectionSnapController';
 import { PizzaExperience } from './components/PizzaExperience';
 import { Menu } from './components/Menu';
@@ -31,8 +31,8 @@ export default function App() {
           {/* 2. "From Ingredients to Plate" 3D Burger Story */}
           <BurgerStory />
 
-          {/* 2.5 3D Exploded Burger & Looping Cinematic GIF Studio */}
-          <BurgerExplodedLab />
+          {/* 2.5 "Made to Tempt Every Sense" Cinematic Food Photography Gallery */}
+          <CinematicFoodGallery />
 
           {/* Snap-to-section controller with smooth cinematic fade between Burger and Pizza */}
           <SectionSnapController />
