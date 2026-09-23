@@ -592,3 +592,101 @@ img {
     font-size: 13px;
   }
 }
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.95;
+  }
+}
+
+/* ========================================================== */
+/* Hero Cinematic Commercial Food Video Styling               */
+/* ========================================================== */
+.hero-food-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  object-position: 74% 48%;
+  filter: brightness(1.16) contrast(1.10) saturate(1.22);
+  transition: filter var(--transition-normal);
+}
+
+@media (max-width: 992px) {
+  .hero-food-video {
+    object-position: 68% 46%;
+    filter: brightness(1.12) contrast(1.08) saturate(1.18);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-food-video {
+    object-position: 58% 38%;
+    filter: brightness(1.06) contrast(1.06) saturate(1.14);
+  }
+}
+
+/* Smooth directional dark gradient: dark on left, transparent on right */
+.hero-cinematic-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: 
+    linear-gradient(
+      to right,
+      rgba(8, 6, 5, 0.96) 0%,
+      rgba(8, 6, 5, 0.92) 34%,
+      rgba(8, 6, 5, 0.70) 48%,
+      rgba(8, 6, 5, 0.22) 62%,
+      rgba(8, 6, 5, 0) 74%,
+      rgba(8, 6, 5, 0) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(8, 6, 5, 0.70) 0%,
+      transparent 14%,
+      transparent 86%,
+      rgba(8, 6, 5, 0.95) 100%
+    );
+}
+
+@media (max-width: 768px) {
+  .hero-cinematic-overlay {
+    background: 
+      linear-gradient(
+        to bottom,
+        rgba(8, 6, 5, 0.45) 0%,
+        rgba(8, 6, 5, 0.82) 40%,
+        rgba(8, 6, 5, 0.95) 85%,
+        rgba(8, 6, 5, 0.98) 100%
+      );
+  }
+}
+
+@keyframes steamFloat {
+  0% {
+    transform: translateY(0px) scale(0.95);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+    opacity: 0.65;
+  }
+  100% {
+    transform: translateY(-40px) scale(1.12);
+    opacity: 0;
+  }
+}
+
+

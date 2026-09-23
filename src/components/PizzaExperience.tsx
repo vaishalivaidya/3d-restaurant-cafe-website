@@ -111,6 +111,33 @@ export const PizzaExperience: React.FC = () => {
       }}
     >
       <div className="container">
+        {/* Quick Snap Back to Burger Button */}
+        <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+          <button
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent('snap-to-section', { detail: { target: 'burger' } }))
+            }
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 18px',
+              borderRadius: '999px',
+              background: 'rgba(20, 16, 13, 0.8)',
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-secondary)',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all var(--transition-fast)',
+            }}
+            title="Smoothly snap back to the Burger Visualization"
+          >
+            <span>🍔</span>
+            <span>Snap Back to Burger Visualization (Cinematic Fade)</span>
+          </button>
+        </div>
+
         {/* Section Header */}
         <div className="section-header">
           <span className="section-kicker">Wood-Fired Alchemy</span>

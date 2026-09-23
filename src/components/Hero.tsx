@@ -1,25 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowDown, Flame, Utensils, Sparkles } from 'lucide-react';
-import { Burger3D } from './3d/Burger3D';
 import { RESTAURANT_DATA } from '../lib/restaurant';
 import { useCart } from '../lib/cartContext';
 
 export const Hero: React.FC = () => {
   const { setIsCartOpen } = useCart();
-  const [scrollExplode, setScrollExplode] = useState(0);
+  const [mouseTilt, setMouseTilt] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const burgerStageRef = useRef<HTMLDivElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const heroHeight = window.innerHeight;
-      // As user scrolls through the hero (0 to 600px), calculate 0 -> 0.75 exploded separation
-      const progress = Math.min(1, Math.max(0, scrollY / (heroHeight * 0.75)));
-      setScrollExplode(progress * 0.75);
-    };
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!burgerStageRef.current) return;
+    const rect = burgerStageRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    // Subtle 3D floating tilt (-4deg to +4deg)
+    const rotateY = ((x - centerX) / centerX) * 4;
+    const rotateX = -((y - centerY) / centerY) * 4;
+    setMouseTilt({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setMouseTilt({ x: 0, y: 0 });
+  };
 
   return (
     <section
@@ -28,21 +34,55 @@ export const Hero: React.FC = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        paddingTop: '40px',
+        paddingTop: '80px',
         paddingBottom: '60px',
         overflow: 'hidden',
+        backgroundColor: '#0a0807',
       }}
     >
-      <div className="container" style={{ width: '100%' }}>
+      {/* Background ambient lighting */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '30%',
+          right: '8%',
+          width: '750px',
+          height: '750px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(230, 126, 34, 0.16) 0%, transparent 70%)',
+          filter: 'blur(100px)',
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '10%',
+          left: '5%',
+          width: '500px',
+          height: '500px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(243, 156, 18, 0.08) 0%, transparent 70%)',
+          filter: 'blur(110px)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div className="container" style={{ width: '100%', maxWidth: '1280px', position: 'relative', zIndex: 1 }}>
+        {/* ======================================================== */}
+        {/* TWO-COLUMN LAYOUT: TEXT ON LEFT, BURGER VISUAL ON RIGHT  */}
+        {/* ======================================================== */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
             alignItems: 'center',
-            gap: '40px',
+            gap: '30px',
           }}
         >
-          {/* Left Column: Hero Editorial Copy */}
+          {/* ======================================================== */}
+          {/* LEFT COLUMN: HERO EDITORIAL COPY & STATS                 */}
+          {/* ======================================================== */}
           <div style={{ zIndex: 2, maxWidth: '580px' }}>
             {/* Quiet Kicker */}
             <div
@@ -117,7 +157,7 @@ export const Hero: React.FC = () => {
               </button>
             </div>
 
-            {/* Quantitative Trust Markers (Skill Guideline: Tabular & Attributable) */}
+            {/* Quantitative Trust Markers */}
             <div
               style={{
                 display: 'grid',
@@ -133,7 +173,7 @@ export const Hero: React.FC = () => {
                     className="tabular-nums"
                     style={{
                       fontFamily: 'var(--font-display)',
-                      fontSize: '22px',
+                      fontSize: '24px',
                       fontWeight: 700,
                       color: 'var(--accent-gold-light)',
                     }}
@@ -155,58 +195,115 @@ export const Hero: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: 3D Interactive Burger Showcase */}
+          {/* ======================================================== */}
+          {/* RIGHT COLUMN: 100% SEAMLESS FLOATING BURGER              */}
+          {/* ======================================================== */}
           <div
             style={{
               position: 'relative',
               width: '100%',
-              height: 'clamp(420px, 55vh, 620px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              perspective: '1200px',
             }}
           >
-            {/* Ambient Ember Backlight Glow */}
+            {/* Hearth Ember Radial Glow Directly Behind the Burger */}
             <div
               style={{
                 position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '680px',
+                height: '680px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(230, 126, 34, 0.30) 0%, rgba(243, 156, 18, 0.10) 40%, rgba(10, 8, 7, 0) 70%)',
+                filter: 'blur(70px)',
+                pointerEvents: 'none',
+                zIndex: 0,
+              }}
+            />
+
+            {/* Rising Delicate Steam Shimmer Accent */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '10%',
+                left: '50%',
+                transform: 'translateX(-50%)',
                 width: '320px',
                 height: '320px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(230, 126, 34, 0.22) 0%, transparent 70%)',
-                filter: 'blur(40px)',
+                background: 'radial-gradient(circle, rgba(255, 240, 220, 0.15) 0%, transparent 65%)',
+                filter: 'blur(45px)',
+                animation: 'steamFloat 4.5s infinite ease-in-out',
+                zIndex: 1,
                 pointerEvents: 'none',
               }}
             />
 
-            {/* 3D Burger Canvas */}
-            <Burger3D
-              mode="hero"
-              explodedOffset={scrollExplode}
-              interactive={true}
-              className="hero-burger-canvas"
-            />
-
-            {/* Interactive Hint Indicator */}
+            {/* Borderless, Cardless Floating Burger Stage */}
             <div
+              ref={burgerStageRef}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
               style={{
-                position: 'absolute',
-                bottom: '16px',
-                right: '16px',
-                background: 'rgba(20, 16, 13, 0.75)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid var(--border-subtle)',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                color: 'var(--text-muted)',
-                pointerEvents: 'none',
+                position: 'relative',
+                zIndex: 2,
+                width: '100%',
+                maxWidth: '680px',
+                height: 'clamp(540px, 72vh, 720px)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                justifyContent: 'center',
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                boxShadow: 'none',
+                transform: `rotateX(${mouseTilt.x}deg) rotateY(${mouseTilt.y}deg)`,
+                transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
             >
-              <span>Move mouse to inspect · Scroll to explode</span>
+              {/* Seamless Video: Zero Box / Border. True black crushed to 0,0,0 + screen blend + feathered ellipse */}
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  WebkitMaskImage: 'radial-gradient(ellipse 65% 75% at 50% 50%, black 25%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.2) 68%, transparent 80%)',
+                  maskImage: 'radial-gradient(ellipse 65% 75% at 50% 50%, black 25%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.2) 68%, transparent 80%)',
+                }}
+              >
+                <video
+                  ref={heroVideoRef}
+                  src="/assets/burger_pin/burger_seamless.mp4"
+                  poster="/assets/burger_pin/burger_seamless_poster.jpg"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    display: 'block',
+                    mixBlendMode: 'screen',
+                    filter: 'brightness(1.18) contrast(1.12) saturate(1.22)',
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -216,7 +313,7 @@ export const Hero: React.FC = () => {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            marginTop: '20px',
+            marginTop: '36px',
           }}
         >
           <a
@@ -227,11 +324,13 @@ export const Hero: React.FC = () => {
               alignItems: 'center',
               gap: '6px',
               color: 'var(--text-muted)',
-              fontSize: '12px',
-              letterSpacing: '0.1em',
+              fontSize: '11px',
+              letterSpacing: '0.14em',
               textTransform: 'uppercase',
+              textDecoration: 'none',
               transition: 'color var(--transition-fast)',
             }}
+            aria-label="Scroll to Craft Story"
           >
             <span>The Craft Story</span>
             <ArrowDown size={14} color="var(--accent-gold)" />

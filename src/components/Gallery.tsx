@@ -188,11 +188,20 @@ export const Gallery: React.FC = () => {
                 justifyContent: 'center',
                 position: 'relative',
                 borderBottom: '1px solid var(--border-subtle)',
+                overflow: 'hidden',
               }}
             >
-              <span style={{ fontSize: '72px', filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))' }}>
-                {item.emoji}
-              </span>
+              {item.id === 'burger' ? (
+                <img
+                  src="/assets/burger_pin/burger_cinematic_fast.gif"
+                  alt="The Grand Artisan Smash"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span style={{ fontSize: '72px', filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))' }}>
+                  {item.emoji}
+                </span>
+              )}
 
               <div
                 style={{

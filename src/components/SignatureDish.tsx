@@ -1,11 +1,12 @@
-import React from 'react';
-import { Star, ShieldCheck, Flame, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, ShieldCheck, Flame, Plus, Sparkles, Film } from 'lucide-react';
 import { Burger3D } from './3d/Burger3D';
 import { useCart } from '../lib/cartContext';
 import { MENU_ITEMS } from '../lib/menu';
 
 export const SignatureDish: React.FC = () => {
   const { addItem } = useCart();
+  const [dishView, setDishView] = useState<'video' | '3d'>('video');
 
   const signatureBurger = MENU_ITEMS.find((i) => i.id === 'b-double-cheese') || MENU_ITEMS[1];
 
@@ -170,20 +171,120 @@ export const SignatureDish: React.FC = () => {
               </button>
             </div>
 
-            {/* Right: Interactive 3D Model with Annotations */}
+            {/* Right: Interactive 3D Model or Flying Burger Video */}
             <div
               style={{
                 position: 'relative',
                 width: '100%',
                 height: 'clamp(440px, 55vh, 600px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              <Burger3D
-                mode="signature"
-                showLabels={true}
-                interactive={true}
-                className="signature-burger-canvas"
-              />
+              {/* Quick Toggle Controls */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  display: 'flex',
+                  gap: '6px',
+                  zIndex: 20,
+                }}
+              >
+                <button
+                  onClick={() => setDishView('video')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '999px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    background: dishView === 'video' ? 'var(--accent-ember)' : 'rgba(20, 16, 13, 0.85)',
+                    color: dishView === 'video' ? '#ffffff' : 'var(--text-secondary)',
+                    border: dishView === 'video' ? '1px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                  }}
+                >
+                  <Film size={12} color={dishView === 'video' ? '#ffffff' : 'var(--accent-gold)'} />
+                  <span>Cinematic Motion</span>
+                </button>
+
+                <button
+                  onClick={() => setDishView('3d')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '999px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    background: dishView === '3d' ? 'var(--accent-ember)' : 'rgba(20, 16, 13, 0.85)',
+                    color: dishView === '3d' ? '#ffffff' : 'var(--text-secondary)',
+                    border: dishView === '3d' ? '1px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                  }}
+                >
+                  <Sparkles size={12} color={dishView === '3d' ? '#ffffff' : 'var(--accent-gold)'} />
+                  <span>3D Model</span>
+                </button>
+              </div>
+
+              {dishView === 'video' ? (
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '400px',
+                    height: '100%',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    border: '1px solid rgba(243, 156, 18, 0.35)',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(230, 126, 34, 0.2)',
+                    background: '#0a0807',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <video
+                    src="/assets/burger_pin/burger_animation.mp4"
+                    poster="/assets/burger_pin/burger_poster.jpg"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '12px',
+                      left: '12px',
+                      background: 'rgba(15, 12, 10, 0.85)',
+                      backdropFilter: 'blur(8px)',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      fontSize: '10px',
+                      color: 'var(--accent-gold)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Culinary Feature: The Grand Artisan Smash
+                  </div>
+                </div>
+              ) : (
+                <Burger3D
+                  mode="signature"
+                  showLabels={true}
+                  interactive={true}
+                  className="signature-burger-canvas"
+                />
+              )}
             </div>
           </div>
         </div>
